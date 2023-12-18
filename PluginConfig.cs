@@ -43,7 +43,7 @@ namespace BetterPause
 		public virtual Color MapperNameColor { get; set; } = new Color(1f, 0.4f, 0.7f);
 		public virtual bool EnableDiffColor { get; set; } = false;
 		[UseConverter(typeof(HexColorConverter))]
-		public virtual Color DiffColor { get; set; } = new Color(1f, 1f, 1f).ColorWithAlpha(0.75f);
+		public virtual Color DiffColor { get; set; } = new Color(1f, 1f, 1f, 0.75f);
 
 		//Custom Button Colors
 		public virtual bool EnableCustomButtonColors { get; set; } = false;
@@ -65,9 +65,9 @@ namespace BetterPause
 		public virtual bool SyncColorsFromMainBackground { get; set; } = false;
 		public virtual bool FlipSyncedColors { get; set; } = false;
 		[UseConverter(typeof(HexColorConverter))]
-		public Color IForgorGradientColor1 { get; set; } = Color.gray.ColorWithAlpha(0.5f);
+		public Color IForgorGradientColor1 { get; set; } = new Color(Color.white.r, Color.white.g, Color.white.b, 0.5f);
 		[UseConverter(typeof(HexColorConverter))]
-		public Color IForgorGradientColor2 { get; set; } = Color.gray.ColorWithAlpha(0.5f);
+		public Color IForgorGradientColor2 { get; set; } = new Color(Color.white.r, Color.white.g, Color.white.b, 0.5f);
 		[UseConverter(typeof(EnumConverter<ImageView.GradientDirection>))]
 		public virtual ImageView.GradientDirection IForgorGradientDirection { get; set; } = ImageView.GradientDirection.Horizontal;
 

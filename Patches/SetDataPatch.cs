@@ -75,7 +75,7 @@ namespace BetterPause.Patches
 			if (IForgorBg != null)
 			{
 				IForgorBg.gradient = true;
-				IForgorBg.color = Color.white.ColorWithAlpha(0.8f);
+				IForgorBg.color = new Color(Color.white.r, Color.white.g, Color.white.b, 0.8f);
 				IForgorBg.gameObject.SetActive(PluginConfig.Instance.EnableIForgorIntegration && _colorResolver.IForgorInstalled);
 				IForgorBg._gradientDirection = PluginConfig.Instance.IForgorGradientDirection;
 				(IForgorBg.color0, IForgorBg._color1) = _colorResolver.GetIForgorGradient();

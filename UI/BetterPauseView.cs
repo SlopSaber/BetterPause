@@ -371,7 +371,7 @@ namespace BetterPause.UI
 			_continueContent = _continueButton.gameObject.AddComponent<ImageContentBehaviour>();
 
 			IForgorBg.gradient = true;
-			IForgorBg.color = Color.white.ColorWithAlpha(0.8f);
+			IForgorBg.color = new Color(Color.white.r, Color.white.g, Color.white.b, 0.8f);
 
 			UpdateMockPause();
 		}

@@ -48,11 +48,11 @@ namespace BetterPause.Providers
 
 		public (Color, Color) GetDiffColor()
 		{
-			var color = config.EnableDiffColor ? config.DiffColor : Color.white.ColorWithAlpha(0.75f);
+			var color = config.EnableDiffColor ? config.DiffColor : new Color(Color.white.r, Color.white.g, Color.white.b, 0.75f);
 			return (color, color);
 		}
 
-		public Color GetAuthorColor() => config.EnableAuthorNameColor ? config.AuthorNameColor : Color.white.ColorWithAlpha(0.75f);
+		public Color GetAuthorColor() => config.EnableAuthorNameColor ? config.AuthorNameColor : new Color(Color.white.r, Color.white.g, Color.white.b, 0.75f);
 		public Color GetSongNameColor() => config.EnableSongNameColor ? config.SongNameColor : Color.white;
 
 		public string GetAuthorString(string mapper, string author)
