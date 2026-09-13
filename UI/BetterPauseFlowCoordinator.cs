@@ -23,7 +23,7 @@ namespace BetterPause.UI
 		internal void Construct(BetterPauseView view)
 		{
 			_view = view;
-			MenuButtons.instance.RegisterButton(
+			MenuButtons.Instance.RegisterButton(
 				new MenuButton("Better Pause", () =>
 				{
 					BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this);

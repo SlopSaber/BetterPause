@@ -17,8 +17,8 @@ namespace BetterPause.Patches
 		}
 
 		[AffinityPostfix]
-		[AffinityPatch(typeof(LevelBar), nameof(LevelBar.Setup), AffinityMethodType.Normal, null, typeof(IPreviewBeatmapLevel), typeof(BeatmapCharacteristicSO), typeof(BeatmapDifficulty))]
-		public void Postfix(LevelBar __instance, IPreviewBeatmapLevel previewBeatmapLevel)
+		[AffinityPatch(typeof(LevelBar), nameof(LevelBar.Setup), AffinityMethodType.Normal, null, typeof(BeatmapLevel), typeof(BeatmapDifficulty), typeof(BeatmapCharacteristic))]
+		public void Postfix(LevelBar __instance, BeatmapLevel beatmapLevel)
 		{
 			Plugin.Log.Debug("Setting up...");
 			var transform = __instance.transform;
@@ -37,10 +37,10 @@ namespace BetterPause.Patches
 				IForgor = IForgor.Find("IFUIBackground");
 			}
 
-			Update(previewBeatmapLevel, bg, cover, menu, res, con, __instance._songNameText, __instance._authorNameText, __instance._difficultyText, __instance._characteristicIconImageView, IForgor?.GetComponent<ImageView>());
+			Update(beatmapLevel, bg, cover, menu, res, con, __instance._songNameText, __instance._authorNameText, __instance._difficultyText, __instance._characteristicIconImageView, IForgor?.GetComponent<ImageView>());
 		}
 
-		internal void Update(IPreviewBeatmapLevel level, ImageView bgImage, ImageView coverImage, GameObject menuButton, GameObject restartButton, GameObject continueButton, TMP_Text songText, TMP_Text authorText, TMP_Text diffText, ImageView diffImage, ImageView IForgorBg)
+		internal void Update(BeatmapLevel level, ImageView bgImage, ImageView coverImage, GameObject menuButton, GameObject restartButton, GameObject continueButton, TMP_Text songText, TMP_Text authorText, TMP_Text diffText, ImageView diffImage, ImageView IForgorBg)
 		{
 			bgImage._skew = 0.18f;
 			bgImage.overrideSprite = null;
@@ -55,15 +55,18 @@ namespace BetterPause.Patches
 			rect.anchorMin = new Vector2(0.01f, rect.anchorMin.y);
 
 			var menuContent = menuButton.gameObject.AddComponent<ImageContentBehaviour>();
+			menuContent.InGame = true;
 			var restartContent = restartButton.gameObject.AddComponent<ImageContentBehaviour>();
+			restartContent.InGame = true;
 			var continueContent = continueButton.gameObject.AddComponent<ImageContentBehaviour>();
+			continueContent.InGame = true;
 
 			(bgImage.color0, bgImage.color1) = _colorResolver.GetBackgroundGradient(true);
 			bgImage._gradientDirection = PluginConfig.Instance.BackgroundGradientDirection;
 
 			songText.color = _colorResolver.GetSongNameColor();
 			authorText.color = _colorResolver.GetAuthorColor();
-			authorText.text = _colorResolver.GetAuthorString(level.levelAuthorName, level.songAuthorName);
+			authorText.text = _colorResolver.GetAuthorString(string.Join(", ", level.allMappers), level.songAuthorName);
 			authorText.richText = true;
 
 			(diffImage.color, diffText.color) = _colorResolver.GetDiffColor();
