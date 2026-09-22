@@ -54,11 +54,11 @@ namespace BetterPause.Patches
 			rect.sizeDelta = new Vector2(13.5f, 13.5f);
 			rect.anchorMin = new Vector2(0.01f, rect.anchorMin.y);
 
-			var menuContent = menuButton.gameObject.AddComponent<ImageContentBehaviour>();
+			var menuContent = menuButton.GetComponent<ImageContentBehaviour>() ?? menuButton.AddComponent<ImageContentBehaviour>();
 			menuContent.InGame = true;
-			var restartContent = restartButton.gameObject.AddComponent<ImageContentBehaviour>();
+			var restartContent = restartButton.GetComponent<ImageContentBehaviour>() ?? restartButton.AddComponent<ImageContentBehaviour>();
 			restartContent.InGame = true;
-			var continueContent = continueButton.gameObject.AddComponent<ImageContentBehaviour>();
+			var continueContent = continueButton.GetComponent<ImageContentBehaviour>() ?? continueButton.AddComponent<ImageContentBehaviour>();
 			continueContent.InGame = true;
 
 			(bgImage.color0, bgImage.color1) = _colorResolver.GetBackgroundGradient(true);

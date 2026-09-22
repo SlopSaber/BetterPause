@@ -13,13 +13,21 @@ namespace BetterPause.UI
 		private (float, float) yVals = (1f, 0f);
 		private void Start()
 		{
-			_button = GetComponent<NoTransitionsButton>();
-			_image = transform.Find("BG").GetComponent<ImageView>();
+			TryInitialize();
+		}
+
+		private bool TryInitialize()
+		{
+			if (_button == null)
+				_button = GetComponent<NoTransitionsButton>();
+			if (_image == null)
+				_image = transform.Find("BG")?.GetComponent<ImageView>();
+			return _button != null && _image != null;
 		}
 
 		private void OnEnable()
 		{
-			if (!InGame) return;
+			if (!InGame || !TryInitialize()) return;
 			var pos = _button.transform.localPosition;
 			pos.y = yVals.Item2;
 			_button.transform.localPosition = pos;
@@ -27,6 +35,7 @@ namespace BetterPause.UI
 
 		private void Update()
 		{
+			if (!TryInitialize()) return;
 			_image.color = _button.selectionState == NoTransitionsButton.SelectionState.Highlighted ? Hover : Default;
 			if (!InGame) return;
 			var pos = _button.transform.localPosition;
