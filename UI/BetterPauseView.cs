@@ -20,7 +20,7 @@ namespace BetterPause.UI
 	{
 		private static PluginConfig config => PluginConfig.Instance;
 
-		[Inject] private ColorResolver _colorResolver;
+		[Inject] private ColorResolver _colorResolver { get; set; }
 
 		[UIValue("direction-options")] private List<object> directionOptions = Enum.GetNames(typeof(ImageView.GradientDirection)).Select(x => (object)x).ToList();
 
@@ -323,24 +323,24 @@ namespace BetterPause.UI
 			}
 		}
 
-		[UIObject("pause-wrapper")] private GameObject _pauseWrapper;
-		[UIComponent("pause-img")] private ImageView _pauseImage;
+		[UIObject("pause-wrapper")] private GameObject _pauseWrapper { get; set; }
+		[UIComponent("pause-img")] private ImageView _pauseImage { get; set; }
 
-		[UIComponent("name-txt")] private TMP_Text _songText;
-		[UIComponent("author-txt")] private TMP_Text _authorText;
+		[UIComponent("name-txt")] private TMP_Text _songText { get; set; }
+		[UIComponent("author-txt")] private TMP_Text _authorText { get; set; }
 
-		[UIComponent("diff-txt")] private TMP_Text _diffText;
-		[UIComponent("diff-img")] private ImageView _diffImage;
+		[UIComponent("diff-txt")] private TMP_Text _diffText { get; set; }
+		[UIComponent("diff-img")] private ImageView _diffImage { get; set; }
 
-		[UIComponent("forgor-example")] private ImageView IForgorBg;
+		[UIComponent("forgor-example")] private ImageView IForgorBg { get; set; }
 
-		[UIObject("menu-btn")] private GameObject _menuButton;
+		[UIObject("menu-btn")] private GameObject _menuButton { get; set; }
 		private ImageContentBehaviour _menuContent;
 
-		[UIObject("restart-btn")] private GameObject _restartButton;
+		[UIObject("restart-btn")] private GameObject _restartButton { get; set; }
 		private ImageContentBehaviour _restartContent;
 
-		[UIObject("continue-btn")] private GameObject _continueButton;
+		[UIObject("continue-btn")] private GameObject _continueButton { get; set; }
 		private ImageContentBehaviour _continueContent;
 
 		[UIAction("#post-parse")]
@@ -355,7 +355,9 @@ namespace BetterPause.UI
 
 				x.SetField("_skew", 0f);
 				x.overrideSprite = null;
-				x.SetImage("#RoundRect10BorderFade");
+				x.sprite = Resources.FindObjectsOfTypeAll<Sprite>().FirstOrDefault(sprite => sprite.name == "RoundRect10BorderFade");
+				if (x.sprite == null)
+					Plugin.Log.Error("Could not find Sprite with image name RoundRect10BorderFade");
 				x.color = new Color(1f, 1f, 1f, 0.4f);
 			}
 

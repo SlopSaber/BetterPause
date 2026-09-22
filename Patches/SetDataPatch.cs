@@ -17,7 +17,7 @@ namespace BetterPause.Patches
 		}
 
 		[AffinityPostfix]
-		[AffinityPatch(typeof(LevelBar), nameof(LevelBar.Setup), AffinityMethodType.Normal, null, typeof(BeatmapLevel), typeof(BeatmapDifficulty), typeof(BeatmapCharacteristic))]
+		[AffinityPatch(typeof(LevelBar), nameof(LevelBar.Setup), AffinityMethodType.Normal, new[] { typeof(BeatmapLevel), typeof(BeatmapDifficulty), typeof(BeatmapCharacteristic) })]
 		public void Postfix(LevelBar __instance, BeatmapLevel beatmapLevel)
 		{
 			Plugin.Log.Debug("Setting up...");
