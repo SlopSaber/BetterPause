@@ -10,6 +10,7 @@ namespace BetterPause.Patches
 {
 	internal class SetDataPatch : IAffinity
 	{
+		private static Material _roundEdgeMaterial;
 		private ColorResolver _colorResolver;
 		public SetDataPatch(ColorResolver colorResolver)
 		{
@@ -20,7 +21,7 @@ namespace BetterPause.Patches
 		[AffinityPatch(typeof(LevelBar), nameof(LevelBar.Setup), AffinityMethodType.Normal, new[] { typeof(BeatmapLevel), typeof(BeatmapDifficulty), typeof(BeatmapCharacteristic) })]
 		public void Postfix(LevelBar __instance, BeatmapLevel beatmapLevel)
 		{
-			Plugin.Log.Debug("Setting up...");
+			if (!PluginConfig.Instance.Enabled) return;
 			var transform = __instance.transform;
 
 			var bg = transform.Find("BG").GetComponent<ImageView>();
@@ -49,7 +50,9 @@ namespace BetterPause.Patches
 			bgImage.rectTransform.anchorMin = new Vector2(-0.04f, 0.5f);
 
 			coverImage._skew = 0.18f;
-			coverImage.material = Resources.FindObjectsOfTypeAll<Material>().FirstOrDefault(x => x.name == "UINoGlowRoundEdge");
+			if (_roundEdgeMaterial == null)
+				_roundEdgeMaterial = Resources.FindObjectsOfTypeAll<Material>().FirstOrDefault(x => x.name == "UINoGlowRoundEdge");
+			coverImage.material = _roundEdgeMaterial;
 			var rect = coverImage.rectTransform;
 			rect.sizeDelta = new Vector2(13.5f, 13.5f);
 			rect.anchorMin = new Vector2(0.01f, rect.anchorMin.y);

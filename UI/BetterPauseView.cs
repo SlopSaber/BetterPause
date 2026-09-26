@@ -324,6 +324,7 @@ namespace BetterPause.UI
 		}
 
 		[UIObject("pause-wrapper")] private GameObject _pauseWrapper { get; set; }
+		private ImageView _wrapperImage;
 		[UIComponent("pause-img")] private ImageView _pauseImage { get; set; }
 
 		[UIComponent("name-txt")] private TMP_Text _songText { get; set; }
@@ -348,6 +349,7 @@ namespace BetterPause.UI
 		{
 			if (gameObject.GetComponent<Touchable>() == null)
 				gameObject.AddComponent<Touchable>();
+			var borderSprite = Resources.FindObjectsOfTypeAll<Sprite>().FirstOrDefault(sprite => sprite.name == "RoundRect10BorderFade");
 			foreach (var x in GetComponentsInChildren<Backgroundable>(true).Select(x => x.GetComponent<ImageView>()))
 			{
 				if (!x || x.color0 != Color.white || x.sprite.name != "RoundRect10" || x.transform.parent.name != "BSMLTab")
@@ -355,13 +357,13 @@ namespace BetterPause.UI
 
 				x.SetField("_skew", 0f);
 				x.overrideSprite = null;
-				x.sprite = Resources.FindObjectsOfTypeAll<Sprite>().FirstOrDefault(sprite => sprite.name == "RoundRect10BorderFade");
+				x.sprite = borderSprite;
 				if (x.sprite == null)
 					Plugin.Log.Error("Could not find Sprite with image name RoundRect10BorderFade");
 				x.color = new Color(1f, 1f, 1f, 0.4f);
 			}
 
-			var wrapperImage = _pauseWrapper.GetComponent<ImageView>();
+			var wrapperImage = _wrapperImage = _pauseWrapper.GetComponent<ImageView>();
 			wrapperImage.SetField("_skew", 0.18f);
 			wrapperImage.overrideSprite = null;
 			wrapperImage.gradient = true;
@@ -384,7 +386,7 @@ namespace BetterPause.UI
 		{
 			if (_pauseWrapper == null) return;
 
-			var wrapperImage = _pauseWrapper.GetComponent<ImageView>();
+			var wrapperImage = _wrapperImage;
 			(wrapperImage.color0, wrapperImage.color1) = _colorResolver.GetBackgroundGradient();
 			wrapperImage._gradientDirection = config.BackgroundGradientDirection;
 
