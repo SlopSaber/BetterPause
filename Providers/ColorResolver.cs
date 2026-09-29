@@ -16,8 +16,8 @@ namespace BetterPause.Providers
 		}
 		public (Color, Color) GetBackgroundGradient(bool inGame = false)
 		{
-			var color0 = config.EnableBackgroundGradient ? config.BackgroundGradientColor2 : new Color(0.68f, 0.57f, 0f, 1f);
-			var color1 = config.EnableBackgroundGradient ? config.BackgroundGradientColor1 : new Color(0.68f, 0.57f, 0f, 0.94f);
+			var color0 = config.Enabled && config.EnableBackgroundGradient ? config.BackgroundGradientColor2 : new Color(0.68f, 0.57f, 0f, 1f);
+			var color1 = config.Enabled && config.EnableBackgroundGradient ? config.BackgroundGradientColor1 : new Color(0.68f, 0.57f, 0f, 0.94f);
 			return inGame ? (color1, color0) : (color0, color1);
 		}
 
@@ -25,7 +25,7 @@ namespace BetterPause.Providers
 		{
 			Color color0;
 			Color color1;
-			if (config.EnableIForgorIntegration)
+			if (config.Enabled && config.EnableIForgorIntegration)
 			{
 				if (config.SyncColorsFromMainBackground)
 				{
@@ -48,16 +48,16 @@ namespace BetterPause.Providers
 
 		public (Color, Color) GetDiffColor()
 		{
-			var color = config.EnableDiffColor ? config.DiffColor : new Color(Color.white.r, Color.white.g, Color.white.b, 0.75f);
+			var color = config.Enabled && config.EnableDiffColor ? config.DiffColor : new Color(Color.white.r, Color.white.g, Color.white.b, 0.75f);
 			return (color, color);
 		}
 
-		public Color GetAuthorColor() => config.EnableAuthorNameColor ? config.AuthorNameColor : new Color(Color.white.r, Color.white.g, Color.white.b, 0.75f);
-		public Color GetSongNameColor() => config.EnableSongNameColor ? config.SongNameColor : Color.white;
+		public Color GetAuthorColor() => config.Enabled && config.EnableAuthorNameColor ? config.AuthorNameColor : new Color(Color.white.r, Color.white.g, Color.white.b, 0.75f);
+		public Color GetSongNameColor() => config.Enabled && config.EnableSongNameColor ? config.SongNameColor : Color.white;
 
 		public string GetAuthorString(string mapper, string author)
 		{
-			if (!string.IsNullOrWhiteSpace(mapper) && config.EnableMapperName)
+			if (!string.IsNullOrWhiteSpace(mapper) && config.Enabled && config.EnableMapperName)
 			{
 				var mapperHex = config.EnableMapperNameColor ? ColorUtility.ToHtmlStringRGBA(config.MapperNameColor) : "ff69b4";
 
@@ -75,8 +75,8 @@ namespace BetterPause.Providers
 
 		private void UpdateButton(ImageContentBehaviour content, Color def, Color hov)
 		{
-			content.Default = def;
-			content.Hover = hov;
+			content.Default = config.Enabled && config.EnableCustomButtonColors ? new Color(def.r, def.g, def.b, 1f) : new Color(0.125f, 0.125f, 0.125f);
+			content.Hover = config.Enabled && config.EnableCustomButtonColors ? new Color(hov.r, hov.g, hov.b, 1f) : new Color(0.125f, 0.125f, 0.125f);
 		}
 	}
 }

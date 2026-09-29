@@ -69,7 +69,7 @@ namespace BetterPause.Patches
 
 			songText.color = _colorResolver.GetSongNameColor();
 			authorText.color = _colorResolver.GetAuthorColor();
-			authorText.text = _colorResolver.GetAuthorString(string.Join(", ", level.allMappers), level.songAuthorName);
+			authorText.text = _colorResolver.GetAuthorString(string.Join(", ", level.allMappers.Concat(level.allLighters)), level.songAuthorName);
 			authorText.richText = true;
 
 			(diffImage.color, diffText.color) = _colorResolver.GetDiffColor();
@@ -82,7 +82,7 @@ namespace BetterPause.Patches
 			{
 				IForgorBg.gradient = true;
 				IForgorBg.color = new Color(Color.white.r, Color.white.g, Color.white.b, 0.8f);
-				IForgorBg.gameObject.SetActive(PluginConfig.Instance.EnableIForgorIntegration && _colorResolver.IForgorInstalled);
+				IForgorBg.gameObject.SetActive(PluginConfig.Instance.Enabled && PluginConfig.Instance.EnableIForgorIntegration && _colorResolver.IForgorInstalled);
 				IForgorBg._gradientDirection = PluginConfig.Instance.IForgorGradientDirection;
 				(IForgorBg.color0, IForgorBg._color1) = _colorResolver.GetIForgorGradient();
 			}

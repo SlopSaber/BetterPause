@@ -1,13 +1,15 @@
 ﻿using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.MenuButtons;
 using HMUI;
+using System;
 using Zenject;
 
 namespace BetterPause.UI
 {
-	internal class BetterPauseFlowCoordinator : FlowCoordinator
+	internal class BetterPauseFlowCoordinator : FlowCoordinator, IInitializable, IDisposable
 	{
 		private BetterPauseView _view;
+		private MenuButton _menuButton;
 
 		public override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
 		{
@@ -23,12 +25,18 @@ namespace BetterPause.UI
 		internal void Construct(BetterPauseView view)
 		{
 			_view = view;
-			MenuButtons.Instance.RegisterButton(
-				new MenuButton("Better Pause", () =>
-				{
-					BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this);
-				}
-			));
+		}
+
+		public void Initialize()
+		{
+			_menuButton = new MenuButton("Better Pause", () => BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(this));
+			MenuButtons.Instance.RegisterButton(_menuButton);
+		}
+
+		public void Dispose()
+		{
+			if (_menuButton != null)
+				MenuButtons.Instance.UnregisterButton(_menuButton);
 		}
 
 		public override void BackButtonWasPressed(ViewController topViewController)
