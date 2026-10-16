@@ -7,7 +7,7 @@
   "description": "Allows you to fix the uncustomizable and ugly pause menu and replace it with a better one (with too many options).",
   "gameVersion": "1.45.3",
   "dependsOn": {
-    "BSIPA": "^4.2.0",
+    "BSIPA": "^5.0.0",
     "BeatSaberMarkupLanguage": "^1.6.0",
     "SiraUtil": "^3.1.0"
   }
