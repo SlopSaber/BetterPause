@@ -3,6 +3,11 @@
 
 
 ## Usage
+
+Song and author text update independently of cover loading. Mapper formatting
+applies to both single-line and multiline pause layouts and stays applied after
+the cover finishes loading.
+
 - Configuration menu is located on the left hand Mods menu under *BetterPause*.
 - The *General Tab* allows you to toggle the mod and enable showing the mapper's name.
 - The *Background Tab* allows you to change the background of the main pause bar.

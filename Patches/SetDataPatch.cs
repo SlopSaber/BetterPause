@@ -1,8 +1,9 @@
-﻿using BetterPause.Providers;
+using BetterPause.Providers;
 using BetterPause.UI;
 using HMUI;
 using SiraUtil.Affinity;
 using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -21,16 +22,19 @@ namespace BetterPause.Patches
 		[AffinityPatch(typeof(LevelBar), nameof(LevelBar.Setup), AffinityMethodType.Normal, new[] { typeof(BeatmapLevel), typeof(BeatmapDifficulty), typeof(BeatmapCharacteristic) })]
 		public void Postfix(LevelBar __instance, BeatmapLevel beatmapLevel)
 		{
-			if (!PluginConfig.Instance.Enabled) return;
+			if (!PluginConfig.Instance.Enabled || __instance == null || beatmapLevel == null) return;
+			UpdateMetadata(__instance, beatmapLevel);
 			var transform = __instance.transform;
+			var buttons = transform.parent?.Find("Buttons");
+			if (buttons == null) return;
 
-			var bg = transform.Find("BG").GetComponent<ImageView>();
-			var cover = transform.Find("SongArtwork").GetComponent<ImageView>();
+			var bg = transform.Find("BG")?.GetComponent<ImageView>();
+			var cover = transform.Find("SongArtwork")?.GetComponent<ImageView>();
 
-			var buttons = transform.parent.Find("Buttons");
-			var menu = buttons.Find("BackButton").gameObject;
-			var res = buttons.Find("RestartButton").gameObject;
-			var con = buttons.Find("ContinueButton").gameObject;
+			var menu = buttons.Find("BackButton")?.gameObject;
+			var res = buttons.Find("RestartButton")?.gameObject;
+			var con = buttons.Find("ContinueButton")?.gameObject;
+			if (bg == null || cover == null || menu == null || res == null || con == null) return;
 
 			var IForgor = buttons.parent.parent.Find("IFUIContainer");
 			if (IForgor != null)
@@ -39,6 +43,48 @@ namespace BetterPause.Patches
 			}
 
 			Update(beatmapLevel, bg, cover, menu, res, con, __instance._songNameText, __instance._authorNameText, __instance._difficultyText, __instance._characteristicIconImageView, IForgor?.GetComponent<ImageView>());
+		}
+
+		[AffinityPostfix]
+		[AffinityPatch(typeof(LevelBar), nameof(LevelBar.SetupData), AffinityMethodType.Normal, new[] { typeof(BeatmapLevel), typeof(BeatmapDifficulty), typeof(BeatmapCharacteristic) })]
+		public void SetupDataPostfix(LevelBar __instance, BeatmapLevel beatmapLevel, ref Task __result)
+		{
+			if (!PluginConfig.Instance.Enabled) return;
+			UpdateMetadata(__instance, beatmapLevel);
+			__result = CompleteSetup(__result, __instance, beatmapLevel);
+		}
+
+		private async Task CompleteSetup(Task setup, LevelBar bar, BeatmapLevel level)
+		{
+			await setup;
+			if (bar == null || bar._beatmapLevel != level) return;
+			Postfix(bar, level);
+		}
+
+		private void UpdateMetadata(LevelBar bar, BeatmapLevel level)
+		{
+			if (bar == null || level == null) return;
+			string mappers = string.Join(", ", (level.allMappers ?? new string[0]).Concat(level.allLighters ?? new string[0]));
+			string author = _colorResolver.GetAuthorString(mappers, level.songAuthorName);
+			if (bar._songNameText != null)
+			{
+				bar._songNameText.text = level.songName;
+				bar._songNameText.color = _colorResolver.GetSongNameColor();
+			}
+			if (bar._multiLineSongNameText != null)
+			{
+				bar._multiLineSongNameText.text = bar._showSongSubName && !string.IsNullOrEmpty(level.songSubName)
+					? level.songName + "\n<size=80%><alpha=#BB>" + level.songSubName
+					: level.songName;
+				bar._multiLineSongNameText.color = _colorResolver.GetSongNameColor();
+			}
+			foreach (TMP_Text text in new TMP_Text[] { bar._authorNameText, bar._multiLineAuthorNameText })
+			{
+				if (text == null) continue;
+				text.text = author;
+				text.color = _colorResolver.GetAuthorColor();
+				text.richText = true;
+			}
 		}
 
 		internal void Update(BeatmapLevel level, ImageView bgImage, ImageView coverImage, GameObject menuButton, GameObject restartButton, GameObject continueButton, TMP_Text songText, TMP_Text authorText, TMP_Text diffText, ImageView diffImage, ImageView IForgorBg)
@@ -69,7 +115,7 @@ namespace BetterPause.Patches
 
 			songText.color = _colorResolver.GetSongNameColor();
 			authorText.color = _colorResolver.GetAuthorColor();
-			authorText.text = _colorResolver.GetAuthorString(string.Join(", ", level.allMappers.Concat(level.allLighters)), level.songAuthorName);
+			authorText.text = _colorResolver.GetAuthorString(string.Join(", ", (level.allMappers ?? new string[0]).Concat(level.allLighters ?? new string[0])), level.songAuthorName);
 			authorText.richText = true;
 
 			(diffImage.color, diffText.color) = _colorResolver.GetDiffColor();
