@@ -13,6 +13,9 @@ namespace BetterPause.Patches
 	{
 		private static Material _roundEdgeMaterial;
 		private ColorResolver _colorResolver;
+		internal int StyleCalls { get; private set; }
+		internal int SetupDataCalls { get; private set; }
+		internal Task NativeSetupTask { get; private set; }
 		public SetDataPatch(ColorResolver colorResolver)
 		{
 			_colorResolver = colorResolver;
@@ -22,6 +25,7 @@ namespace BetterPause.Patches
 		[AffinityPatch(typeof(LevelBar), nameof(LevelBar.Setup), AffinityMethodType.Normal, new[] { typeof(BeatmapLevel), typeof(BeatmapDifficulty), typeof(BeatmapCharacteristic) })]
 		public void Postfix(LevelBar __instance, BeatmapLevel beatmapLevel)
 		{
+			StyleCalls++;
 			if (!PluginConfig.Instance.Enabled || __instance == null || beatmapLevel == null) return;
 			UpdateMetadata(__instance, beatmapLevel);
 			var transform = __instance.transform;
@@ -49,6 +53,8 @@ namespace BetterPause.Patches
 		[AffinityPatch(typeof(LevelBar), nameof(LevelBar.SetupData), AffinityMethodType.Normal, new[] { typeof(BeatmapLevel), typeof(BeatmapDifficulty), typeof(BeatmapCharacteristic) })]
 		public void SetupDataPostfix(LevelBar __instance, BeatmapLevel beatmapLevel, ref Task __result)
 		{
+			SetupDataCalls++;
+			NativeSetupTask = __result;
 			if (!PluginConfig.Instance.Enabled) return;
 			UpdateMetadata(__instance, beatmapLevel);
 			__result = CompleteSetup(__result, __instance, beatmapLevel);

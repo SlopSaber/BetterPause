@@ -1,4 +1,4 @@
-﻿using BetterPause.Patches;
+using BetterPause.Patches;
 using BetterPause.Providers;
 using Zenject;
 
@@ -9,7 +9,8 @@ namespace BetterPause.Installers
 		public override void InstallBindings()
 		{
 			Container.Bind<ColorResolver>().AsSingle().NonLazy();
-			Container.BindInterfacesTo<SetDataPatch>().AsSingle();
+			Container.BindInterfacesAndSelfTo<SetDataPatch>().AsSingle();
+			Container.BindInterfacesTo<PauseMetadataTrace>().AsSingle().NonLazy();
 		}
 	}
 }
