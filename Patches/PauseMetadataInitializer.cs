@@ -8,7 +8,7 @@ using Zenject;
 
 namespace BetterPause.Patches
 {
-	internal sealed class PauseMetadataTrace : IInitializable, ILateTickable
+	internal sealed class PauseMetadataInitializer : IInitializable, ILateTickable
 	{
 		private readonly GameplayCoreSceneSetupData scene;
 		private readonly PauseMenuManager menu;
@@ -17,7 +17,7 @@ namespace BetterPause.Patches
 		private bool observedPause;
 		private int sampleFrame = -1;
 
-		public PauseMetadataTrace(GameplayCoreSceneSetupData scene, PauseMenuManager menu, IGamePause pause, SetDataPatch patch)
+		public PauseMetadataInitializer(GameplayCoreSceneSetupData scene, PauseMenuManager menu, IGamePause pause, SetDataPatch patch)
 		{
 			this.scene = scene;
 			this.menu = menu;
@@ -27,6 +27,13 @@ namespace BetterPause.Patches
 
 		public void Initialize()
 		{
+			// The canvas can be shown while its disabled manager has never reached Start.
+			var data = menu != null ? menu._initData : null;
+			if (data != null && data.showLevelBar && data.beatmapLevel != null && menu._levelBar != null && menu._levelBar._beatmapLevel == null)
+			{
+				menu._levelBar.Setup(data.beatmapLevel, data.beatmapKey.difficulty, data.beatmapKey.characteristic);
+				Plugin.Log.Info($"Initialized native pause level bar: {data.beatmapLevel.levelID}.");
+			}
 			Capture("scene initialized");
 		}
 
@@ -68,6 +75,8 @@ namespace BetterPause.Patches
 						if (text.gameObject.activeInHierarchy)
 							Plugin.Log.Info($"Pause label: path={Path(text.transform)}, enabled={text.enabled}, text='{Safe(text.text)}'.");
 				ReportPatches(typeof(PauseMenuManager).GetMethod("Start", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+				ReportPatches(typeof(PauseMenuManager).GetMethod("ShowMenu", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+				ReportPatches(typeof(PauseController).GetMethod("Pause", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 				ReportPatches(typeof(LevelBar).GetMethod("Setup", new[] { typeof(BeatmapLevel), typeof(BeatmapDifficulty), typeof(BeatmapCharacteristic) }));
 				ReportPatches(typeof(LevelBar).GetMethod("SetupData", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 				ReportPatches(typeof(TMP_Text).GetProperty("text")?.GetSetMethod());

@@ -10,7 +10,7 @@ namespace BetterPause.Installers
 		{
 			Container.Bind<ColorResolver>().AsSingle().NonLazy();
 			Container.BindInterfacesAndSelfTo<SetDataPatch>().AsSingle();
-			Container.BindInterfacesTo<PauseMetadataTrace>().AsSingle().NonLazy();
+			Container.BindInterfacesTo<PauseMetadataInitializer>().AsSingle().NonLazy();
 		}
 	}
 }

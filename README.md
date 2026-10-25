@@ -7,6 +7,8 @@
 Song and author text update independently of cover loading. Mapper formatting
 applies to both single-line and multiline pause layouts and stays applied after
 the cover finishes loading.
+The native pause level bar initializes during game setup, including when the
+pause canvas is shown without enabling its manager first.
 
 - Configuration menu is located on the left hand Mods menu under *BetterPause*.
 - The *General Tab* allows you to toggle the mod and enable showing the mapper's name.

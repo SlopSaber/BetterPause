@@ -139,7 +139,7 @@
     <Compile Include="Installers\BetterPauseGameInstaller.cs" />
     <Compile Include="Installers\BetterPauseMenuInstaller.cs" />
     <Compile Include="Patches\SetDataPatch.cs" />
-    <Compile Include="Patches\PauseMetadataTrace.cs" />
+    <Compile Include="Patches\PauseMetadataInitializer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
